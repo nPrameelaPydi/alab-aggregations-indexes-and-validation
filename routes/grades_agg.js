@@ -68,7 +68,6 @@ async function setValidation() {
         console.error("Error setting validation rules:", error);
     }
 }
-
 setValidation();
 
 
@@ -331,14 +330,6 @@ router.get("/stats/:id", async (req, res) => {
         res.status(500).send("Error fetching statistics");
     }
 });
-
-
-
-
-
-
-
-
 
 
 export default router;

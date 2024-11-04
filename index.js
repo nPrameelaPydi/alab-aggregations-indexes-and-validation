@@ -16,7 +16,6 @@ app.get("/", (req, res) => {
     res.send("Welcome to the API");
 });
 
-// Mount the grades_agg routes before the grades routes
 app.use("/grades", grades_agg);
 app.use("/grades", grades);
 
