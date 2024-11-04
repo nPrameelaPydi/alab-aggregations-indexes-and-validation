@@ -17,6 +17,26 @@ const router = express.Router();
  * - Homework: 20%
  */
 
+async function createIndexes() {
+    const collection = db.collection("grades");
+
+    // Create a single-field index on class_id
+    await collection.createIndex({ class_id: 1 });
+
+    // Create a single-field index on learner_id
+    await collection.createIndex({ learner_id: 1 });
+
+    // Create a compound index on learner_id and class_id
+    await collection.createIndex({ learner_id: 1, class_id: 1 });
+
+    console.log("Indexes created successfully");
+}
+
+// Call the function to create indexes
+createIndexes().catch(console.error);
+
+
+
 // Get the weighted average of a specified learner's grades, per class
 router.get("/learner/:id/avg-class", async (req, res) => {
     let collection = await db.collection("grades");
@@ -192,7 +212,7 @@ router.get("/stats/:id", async (req, res) => {
             // Group by learner_id to calculate averages
             {
                 $group: {
-                    _id: "$learner_id",  // Group by learner_id
+                    _id: "$learner_id",
                     quiz: {
                         $push: {
                             $cond: {
@@ -276,6 +296,11 @@ router.get("/stats/:id", async (req, res) => {
         res.status(500).send("Error fetching statistics");
     }
 });
+
+
+
+
+
 
 
 
