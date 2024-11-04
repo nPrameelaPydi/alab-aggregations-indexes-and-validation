@@ -31,10 +31,45 @@ async function createIndexes() {
 
     console.log("Indexes created successfully");
 }
-
 // Call the function to create indexes
 createIndexes().catch(console.error);
 
+
+//validation rules on the grades collection
+async function setValidation() {
+    try {
+        const result = await db.command({
+            collMod: "grades",
+            validator: {
+                $jsonSchema: {
+                    bsonType: "object",
+                    required: ["class_id", "learner_id"],
+                    properties: {
+                        class_id: {
+                            bsonType: "int",
+                            description: "must be an integer between 0 and 300, inclusive",
+                            minimum: 0,
+                            maximum: 300,
+                        },
+                        learner_id: {
+                            bsonType: "int",
+                            description: "must be an integer greater than or equal to 0",
+                            minimum: 0,
+                        },
+                    },
+                },
+            },
+            //validationAction: "error", // Reject writes that do not match the validation rules
+            validationAction: "warn", // "warn" allow writes but issue a warning
+        });
+
+        console.log("Validation rules set:", result);
+    } catch (error) {
+        console.error("Error setting validation rules:", error);
+    }
+}
+
+setValidation();
 
 
 // Get the weighted average of a specified learner's grades, per class
